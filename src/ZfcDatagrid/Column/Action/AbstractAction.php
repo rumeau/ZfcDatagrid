@@ -270,25 +270,24 @@ abstract class AbstractAction
     {
         if (is_array($col)) {
             $args = func_get_args();
+            $error = false;
             if (count($args) > 2 && empty($value)) {
-                throw new \InvalidArgumentException(
-                    'The second argument cannot be empty and must be a value operator (OR, AND)'
-                );
+                $error = 'The second argument cannot be empty and must be a value operator (OR, AND)';;
             }
 
             if (!isset($col['columns']) || !isset($col['values']) || !isset($col['comparison'])) {
-                throw new \InvalidArgumentException(
-                    'The first argument must contains "columns", "values" and "comparison" keys'
-                );
+                $error = 'The first argument must contains "columns", "values" and "comparison" keys';
             }
             if (count($col['columns']) !== count($col['values'])) {
-                throw new \InvalidArgumentException('You must supply the same ammount of values and columns');
+                $error = 'You must supply the same ammount of values and columns';
             }
 
             if (is_array($col['comparison']) && count($col['columns']) !== count($col['comparison'])) {
-                throw new \InvalidArgumentException(
-                    'If $comparison argument is and array, you must supply one comparison for each column'
-                );
+                $error = 'If $comparison argument is and array, you must supply one comparison for each column';
+            }
+
+            if ($error !== false) {
+                throw new \InvalidArgumentException($error);
             }
 
             $rules = array();
